@@ -1,3 +1,3 @@
 # mern-project
 
-To run dev use `npm run dev`
+To run developnent server use `npm run dev`
