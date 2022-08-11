@@ -11,6 +11,7 @@ app.use('/api/auth', require('./routes/auth'))
 app.use('/api/currency', require('./routes/currency'))
 app.use('/api/accounts', require('./routes/accounts'))
 app.use('/api/transactions', require('./routes/transactions'))  
+app.use('/api/mail', require('./routes/mail'))  
 
 
 const start = async () => {

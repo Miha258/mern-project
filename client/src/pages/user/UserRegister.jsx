@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useHttp } from "../../hooks/http.hook"
 import { useEffect } from "react"
 import { useBalance } from "../../hooks/balance.hook"
+import { useMail } from "../../hooks/mail.hook"
 import { useContext } from "react"
 import { AuthContext } from "../../context"
 import { Navigate } from "react-router-dom"
@@ -22,7 +23,8 @@ export const RegisterUserAccount = () => {
     )
     const { balance, changeBalance, currency, changeCurrency } = useBalance()
     const { isAuth, login } = useContext(AuthContext)
-        
+    const { needOpenAccount } = useMail()
+    
     const formChange = event => {
         let value = event.target.value
         if (event.target.id === "balance"){
@@ -47,8 +49,18 @@ export const RegisterUserAccount = () => {
             const currency = document.getElementById("USD").checked ? 'USD' : 'ILS'
             form.balance = balance + ' ' + currency
             await request('/api/auth/user-register', 'POST', form)
-            const data = await request('/api/auth/user-login', 'POST', {...form})
+            let data = await request('/api/auth/user-login', 'POST', {...form})
             login(data.userId, data.token, form.password)
+            
+            const userId = data.userId
+            data = await request('/api/account/all-managers')
+            const managersEmails = data.message.filter(manager => manager.email)
+
+            for (let email of managersEmails){
+                await request('/api/mail/send-mail', 'POST', {
+                    to: email, html: needOpenAccount(userId, form.name, form.surname)
+                })
+            }
         } catch (err) {
             console.log(err)
         }

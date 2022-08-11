@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const { check, validationResult} = require('express-validator')
 const User = require('../models/User')
+const Manager = require('../models/Manager')
 const bcrypt = require('bcrypt')
 
 const router = Router()
@@ -96,6 +97,16 @@ router.put('/change-user-account',
     }
 })
 
+
+router.get('/all-managers', async (req, res) => {
+    try {
+        const managers = await Manager.find({})
+        return res.status(200).json({ message: managers })
+    } catch (err) {
+        console.log(err)
+        return res.status(400).json({ message: 'Error' })
+    }
+})
 
 
 module.exports = router

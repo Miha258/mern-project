@@ -3,6 +3,8 @@ const router = Router()
 const Transaction = require('../models/Transaction')
 const User = require('../models/User')
 const { check, validationResult} = require('express-validator')
+const sendMail = require('../api/googlemail')
+const Manager = require('../models/Manager')
 
 //api /api/transactions
 
@@ -106,11 +108,39 @@ router.post('/lend',
         let checkLendStatus = setInterval(async () => { 
             if (userBalance * 0.6 < lendSum) {
                 clearInterval(checkLendStatus)
-                //Send message to user
-                checkLendStatus = setInterval(() => {
+                await sendMail(user.email, `
+                <html lang="en">
+                <head>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+                </head>
+                    <body>
+                        <div id="root">
+                            <h1>Dear ${user.surname} ${user.name}.Fill up your balance or your account will be deleted</h1>
+                        </div>
+                    </body>
+                </html>
+                `)
+                checkLendStatus = setInterval(async () => {
                     if (userBalance === 0) {
+                        const allManagers = await Manager.find({})
+                        const emails = allManagers.filter(manager => manager.email)
                         clearInterval(checkLendStatus)
-                        //Send message to manager
+                        
+                        for (let email of emails){
+                            await sendMail(email,`
+                            <html lang="en">
+                            <head>
+                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+                            </head>
+                                <body>
+                                    <div id="root">
+                                        <h1>Close this account bcause this user can\`t pay credit</h1>
+                                        <a className="dark-grey waves-light btn text-center" href="http://localhost:3000/manager/user-accounts#${user.id}">Accept</a>
+                                    </div>
+                                </body>
+                            </html>
+                            `)
+                        }
                     }
                 }, 5000)
             } else if (transaction.date === transaction.date.setDate(transaction.date.getDate + 7)){

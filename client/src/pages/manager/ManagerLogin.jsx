@@ -38,6 +38,7 @@ export const ManagerLogin = () => {
     if (isAuth){
         return <Navigate to="/manager"/>
     }
+    
     return (
         <>
             <div className="row">
