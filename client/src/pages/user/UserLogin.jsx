@@ -29,7 +29,8 @@ export const UserLogin = () => {
                 return
             }
             const data = await request('/api/auth/user-login', 'POST', {...form})
-            login(data.userId, data.token, form.password)
+            const isManager = false
+            login(data.userId, data.token, form.password, isManager)
         } catch (err) {
             console.log(err)
         }

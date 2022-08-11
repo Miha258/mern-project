@@ -3,11 +3,12 @@ import { useHttp } from "../../hooks/http.hook"
 import { useContext } from "react"
 import { AuthContext } from "../../context"
 import { useMail } from "../../hooks/mail.hook"
+import { Navigate } from "react-router-dom"
 
 
 export const UserAccounts = () => {
     const { request } = useHttp()
-    const { isAuth } = useContext(AuthContext)
+    const { isAuth, isManager} = useContext(AuthContext)
     const [ accounts, setAccounts ] = useState([])
     const { accountOpened, accountClosed} = useMail()
 
@@ -46,10 +47,10 @@ export const UserAccounts = () => {
         })
     }
 
-    if (!isAuth){
+    if (!isAuth && !isManager){
         return <Navigate to="/manager/login"/>
-    }
-    
+    } 
+
     return (
         <>
             <div className="row">

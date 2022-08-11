@@ -1,8 +1,7 @@
 import Navbar from "../../components/Navbar"
-import { Link, Outlet, useLocation } from "react-router-dom"
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom"
 import { AuthContext } from "../../context"
 import { useContext } from "react"
-
 
 export const UserPage = () => {
     const location = useLocation()

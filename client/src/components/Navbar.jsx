@@ -10,7 +10,7 @@ const Navbar = () => {
     const logoutHandler = event => {
         event.preventDefault()
         logout()
-        navigate('/user', {replace: true})
+        navigate('/', {replace: true})
     }
     const getNavItems = (pathname) => {
         if (pathname.includes("/user") && !location.pathname.includes("/manager")){
@@ -23,6 +23,7 @@ const Navbar = () => {
         } else if (pathname.includes("/manager")){
             return <ul id="nav-mobile" className="left hide-on-med-and-down" style={{marginLeft: '20px'}}>
                 {isAuth && <li><Link to="user-accounts">User requests</Link></li>}
+                {isAuth && <li onClick={logoutHandler}><Link to="logout">Logout</Link></li>}
             </ul>
         }
     }

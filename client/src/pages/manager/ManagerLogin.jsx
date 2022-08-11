@@ -14,7 +14,7 @@ export const ManagerLogin = () => {
             password: ''
         }
     )
-    const { isAuth, login } = useContext(AuthContext)
+    const { isAuth, login, isManager } = useContext(AuthContext)
 
     
     const formChange = event => {
@@ -29,13 +29,15 @@ export const ManagerLogin = () => {
                 return
             }
             const data = await request('/api/auth/user-login', 'POST', {...form})
-            login(data.userId, data.token, form.password)
+
+            const isManager = true
+            login(data.userId, data.token, form.password, isManager)
         } catch (err) {
             console.log(err)
         }
     } 
 
-    if (isAuth){
+    if (isAuth && isManager){
         return <Navigate to="/manager"/>
     }
     

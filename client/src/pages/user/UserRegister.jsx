@@ -50,7 +50,8 @@ export const RegisterUserAccount = () => {
             form.balance = balance + ' ' + currency
             await request('/api/auth/user-register', 'POST', form)
             let data = await request('/api/auth/user-login', 'POST', {...form})
-            login(data.userId, data.token, form.password)
+            const isManager = false
+            login(data.userId, data.token, form.password, isManager)
             
             const userId = data.userId
             data = await request('/api/account/all-managers')

@@ -6,11 +6,11 @@ import { useRoutes } from "./routes"
 
 function App() {
   const routes = useRoutes()
-  const { token, userId, login, logout, password } = useAuth()
+  const { token, userId, login, logout, password, isManager} = useAuth()
   const isAuth = !!token
   return (
       <AuthContext.Provider value={{
-        token, userId, login, logout, isAuth, password
+        token, userId, login, logout, isAuth, password, isManager
       }}>
         <div>
           {routes}

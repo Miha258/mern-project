@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import { AuthContext } from "../../context"
 import { useContext } from "react"
 import { useEffect } from "react"
@@ -32,7 +32,21 @@ export const UserTransactions = () => {
     }
 
     const filterDate = event => {
-        console.log(event)
+        const target = event.target
+        const now = new Date()
+        switch (target){
+            case "lastYear":
+                setTransactions(transactions.message.filter(transaction => (now.getFullYear() - new Date(transaction.date).getFullYear()) === 1))
+                break
+
+            case "lastMonth":
+                setTransactions(transactions.message.filter(transaction => (now.getMonth() - new Date(transaction.date).getMonth()) === 1))
+                break
+
+            case "lastDay":
+                setTransactions(transactions.message.filter(transaction => (now.getDate() - new Date(transaction.date).getDate()) === 1))
+                break
+        }
     }
 
     if (!isAuth){
@@ -42,13 +56,28 @@ export const UserTransactions = () => {
     return (
         <>
             <div className="row" style={{paddingLeft: "10rem", paddingRight: "10rem"}}>
+                <div className="filter" onClick={filterDate}>
                 <label>Date filter</label>
-                <select className="browser-default" onSelect={filterDate}>
-                    <option value="" disabled defaultValue>Choose your option</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </select>
+                <p>
+                
+                <label>
+                    <input id="lastDay" className="with-gap" name="group1" type="radio"  />
+                    <span>Last day</span>
+                </label>
+                </p>
+                <p>
+                <label>
+                    <input id="lastMonth" className="with-gap" name="group1" type="radio"  />
+                    <span>Last month</span>
+                </label>
+                </p>
+                <p>
+                <label>
+                    <input id="lastYear" className="with-gap" name="group1" type="radio"  />
+                    <span>Last year</span>
+                </label>
+                </p>
+                </div>
                 <h1 className="center-align" style={{marginRight: "70px"}}>Your transactions</h1>
                 {
                     transactions.message && transactions.message.map((transaction, idx) => {

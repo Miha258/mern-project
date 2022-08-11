@@ -1,11 +1,17 @@
 import Navbar from "../../components/Navbar"
-import { Link, Outlet, useLocation } from "react-router-dom"
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom"
 import { AuthContext } from "../../context"
 import { useContext } from "react"
 
+
 export const ManagerPage = () => {
     const location = useLocation()
-    let { isAuth } = useContext(AuthContext)
+    let { isAuth, isManager } = useContext(AuthContext)
+
+
+    if (!isManager && isAuth){
+        return <Navigate to="/user"/>
+    }
 
     return (
         <>  

@@ -9,4 +9,5 @@ export const AuthContext = createContext({
     logout: noop,
     isAuth: false,
     password: null,
+    isManager: false,
 })
