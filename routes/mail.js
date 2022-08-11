@@ -4,7 +4,7 @@ const sendMail = require('../api/googlemail')
 
 
 //api /api/mail
-router.get('/send-mail', async (req, res) => {
+router.post('/send-mail', async (req, res) => {
     try {
         const { to, html } = req.body
         await sendMail(to, html)
