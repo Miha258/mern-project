@@ -1,5 +1,6 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom"
 import { RegisterUserAccount } from "./pages/user/UserRegister"
+import { MainPage } from "./pages/MainPage"
 
 import { UserPage } from "./pages/user/UserPage"
 import { UserLogin } from "./pages/user/UserLogin"
@@ -16,6 +17,7 @@ export const useRoutes = () => {
     return ( 
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<MainPage/>}/>
                 <Route path="/user" element={<UserPage/>}>
                     <Route path="register" element={<RegisterUserAccount/>}/>
                     <Route path="login" element={<UserLogin/>}/>
