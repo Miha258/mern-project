@@ -15,13 +15,14 @@ const Navbar = () => {
     const getNavItems = (pathname) => {
         if (pathname.includes("/user") && !location.pathname.includes("/manager")){
             return <ul id="nav-mobile" className="left hide-on-med-and-down" style={{marginLeft: '20px'}}>
-                <li><Link to="/user">Main page</Link></li>
+                <li><Link to="/">Main page</Link></li>
                 <li><Link to={isAuth ? "account" : "login"}>My account</Link></li>    
                 {isAuth && <li><Link to="transfers">Transfers</Link></li>}
                 {isAuth && <li onClick={logoutHandler}><Link to="logout">Logout</Link></li>}
             </ul>
         } else if (pathname.includes("/manager")){
             return <ul id="nav-mobile" className="left hide-on-med-and-down" style={{marginLeft: '20px'}}>
+                <li><Link to="/">Main page</Link></li>
                 {isAuth && <li><Link to="user-accounts">User requests</Link></li>}
                 {isAuth && <li onClick={logoutHandler}><Link to="logout">Logout</Link></li>}
             </ul>
