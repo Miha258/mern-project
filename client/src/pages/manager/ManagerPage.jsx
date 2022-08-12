@@ -20,7 +20,7 @@ export const ManagerPage = () => {
             <div className="center-align">
                 <h1>Manager page</h1>
                 {isAuth ? 
-                <Link className="waves-effect blue-grey darken-1 btn" to="account">User requests</Link> 
+                <Link className="waves-effect blue-grey darken-1 btn" to="user-accounts">User requests</Link> 
                 : 
                 <Link className="waves-effect blue-grey darken-1 btn" to="register">Create account</Link>
                 }

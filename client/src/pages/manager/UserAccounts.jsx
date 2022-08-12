@@ -49,12 +49,14 @@ export const UserAccounts = () => {
 
     if (!isAuth && !isManager){
         return <Navigate to="/manager/login"/>
+    } else if (isAuth && !isManager){
+        return <Navigate to="/user"/>
     } 
 
     return (
         <>
             <div className="row">
-                <h1>User accounts</h1>
+                <h1 className="center-align" style={{marginRight: "100px"}}>User accounts</h1>
                 {
                     accounts && accounts.map((account, idx) => 
                         !account.opened &&
