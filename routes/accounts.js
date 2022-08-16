@@ -16,7 +16,7 @@ router.get('/user-account/:id', async (req, res) => {
             if (!user) {
                 return res.status(404).json({ message: 'User not found' })
             }
-            return res.status(200).json({ message: user })
+            return res.status(200).json({ data: user })
         }
         return res.status(400).json({ message: 'Invalid user id' })
     } catch (err) {
@@ -35,7 +35,7 @@ router.get('/open-account/:id', async (req, res) => {
             }
             await user.updateOne({"$set": {opened: true}})
             console.log(user)
-            return res.status(200).json({ message: 'Account opened succecfuly' })
+            return res.status(200).json({ message: 'Account opened successfully' })
         }
         return res.status(400).json({ message: 'Invalid user id' })
     } catch (err) {
@@ -63,7 +63,7 @@ router.delete('/delete-account/:id', async (req, res) => {
 router.get('/user-accounts', async (req, res) => {
     try {
         const users = await User.find({})
-        return res.status(200).json({ message: users })
+        return res.status(200).json({ data: users })
     } catch (err) {
         console.log(err)
         return res.status(400).json({ message: 'Error' })
@@ -101,7 +101,7 @@ router.put('/change-user-account',
 router.get('/all-managers', async (req, res) => {
     try {
         const managers = await Manager.find({})
-        return res.status(200).json({ message: managers })
+        return res.status(200).json({ data: managers })
     } catch (err) {
         console.log(err)
         return res.status(400).json({ message: 'Error' })

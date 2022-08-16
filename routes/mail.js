@@ -8,7 +8,7 @@ router.post('/send-mail', async (req, res) => {
     try {
         const { to, html } = req.body
         await sendMail(to, html)
-        return res.status(200).json({ result: "Email sendeed" })
+        return res.status(200).json({ result: "Email sent" })
     } catch (err) {
         console.log(err)
         return res.status(400).json({ message: 'Error' })

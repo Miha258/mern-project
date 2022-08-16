@@ -9,6 +9,7 @@ router.get( '/convert', async (req, res) => {
     try {
         const { from, to, amount  } = req.query
         const currencyConverter = new CC({from, to, amount: parseFloat(amount)})
+        console.log(amount)
         const convertedCur = await currencyConverter.convert()
         return res.status(200).json({ result: convertedCur })
     } catch (err) {
