@@ -19,7 +19,7 @@ export const UserAccount = () => {
 
     const getAccountData = useCallback(async () => {    
         const data = await request(`/api/accounts/user-account/${userId}`, 'GET')
-        setForm(data.message)
+        setForm(data.data)
         return data
     }, [userId, request ])
 

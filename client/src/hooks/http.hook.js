@@ -14,6 +14,8 @@ export const useHttp = () => {
             const data = await response.json()
             if (data.errors){
                 setError(data.errors[0].msg)
+            } else {
+                setAlert(data.message)
             }
             return data
         } catch (err) {

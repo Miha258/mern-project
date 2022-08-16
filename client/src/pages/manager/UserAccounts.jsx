@@ -15,7 +15,7 @@ export const UserAccounts = () => {
 
     const getUserAccounts = useCallback(async () => {
         const data = await request('/api/accounts/user-accounts', 'GET')
-        setAccounts(data.message)
+        setAccounts(data.data)
     }, [request])
 
 

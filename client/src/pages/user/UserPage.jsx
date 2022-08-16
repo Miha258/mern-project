@@ -1,5 +1,5 @@
 import Navbar from "../../components/Navbar"
-import { Link, Navigate, Outlet, useLocation } from "react-router-dom"
+import { Link, Outlet, useLocation } from "react-router-dom"
 import { AuthContext } from "../../context"
 import { useContext } from "react"
 

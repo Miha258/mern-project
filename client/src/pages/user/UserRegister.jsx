@@ -7,6 +7,8 @@ import { useContext } from "react"
 import { AuthContext } from "../../context"
 import { Navigate } from "react-router-dom"
 import { Link } from "react-router-dom"
+import CurrencyInput from 'react-currency-input'
+
 
 export const RegisterUserAccount = () => {
     const { request, setError } = useHttp()
@@ -26,19 +28,16 @@ export const RegisterUserAccount = () => {
     const { needOpenAccount } = useMail()
     
     const formChange = event => {
+        event.preventDefault()
         let value = event.target.value
-        if (event.target.id === "balance"){
-            changeBalance(value)
-            value = balance + " " + currency
-        }
         form[event.target.id] = value
         event.target.value = value
     }
 
-    useEffect(() => {
-        const balanceInput = document.getElementById('balance')
-        balanceInput.value = form.balance
-    }, [form])
+    // useEffect(() => {
+    //     const balanceInput = document.getElementById('balance')
+    //     balanceInput.value = form.balance
+    // }, [form])
     
     const registerHandler = async () => {
         try {
@@ -55,7 +54,7 @@ export const RegisterUserAccount = () => {
             
             const userId = data.userId
             data = await request('/api/account/all-managers')
-            const managersEmails = data.message.filter(manager => manager.email)
+            const managersEmails = data.data.filter(manager => manager.email)
 
             for (let email of managersEmails){
                 await request('/api/mail/send-mail', 'POST', {
@@ -101,17 +100,17 @@ export const RegisterUserAccount = () => {
                                 <input id="addres" type="text"/>
                                 <label htmlFor="addres">Addres</label>
                             </div> 
-                            <div className="input-field" style={{marginTop: '50px'}} onChange={changeCurrency}>
-                                <input className="white-text" id="balance" type="text"/>
+                            <div className="input-field" style={{marginTop: '50px'}}>
+                                <CurrencyInput id="balance" value={form.balance} prefix={currency + " "} thousandSeparator=""/>
                                 <label htmlFor="balance">Balance</label>
                                 <p>
-                                    <label>
-                                        <input id="USD" className="with-gap" name="group3" type="radio" defaultChecked/>
+                                    <label onClick={changeCurrency}>
+                                        <input id="USD" className="with-gap" name="group3" type="radio" checked/>
                                         <span>USD</span>
                                     </label>
                                 </p>
                                 <p>
-                                    <label>
+                                    <label onClick={changeCurrency}>
                                         <input id="ILS" className="with-gap" name="group3" type="radio"/>
                                         <span>ILS</span>
                                     </label>
