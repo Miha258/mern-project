@@ -19,7 +19,6 @@ export const useHttp = () => {
             }
             return data
         } catch (err) {
-            setError(err)
             console.log(err) 
         }
         

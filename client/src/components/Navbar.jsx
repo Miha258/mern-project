@@ -12,6 +12,8 @@ const Navbar = () => {
         logout()
         navigate('/', {replace: true})
     }
+    
+
     const getNavItems = (pathname) => {
         if (pathname.includes("/user") && !location.pathname.includes("/manager")){
             return <ul id="nav-mobile" className="left hide-on-med-and-down" style={{marginLeft: '20px'}}>

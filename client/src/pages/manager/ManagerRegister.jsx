@@ -17,7 +17,7 @@ export const ManagerRegister = () => {
         }
     )
     const { isAuth, login, isManager} = useContext(AuthContext)
-        
+    
     const formChange = event => {
         let value = event.target.value
         form[event.target.id] = value

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef} from "react"
 
 export const useAuth = () => {
     const [token, setToken] = useState(null)
@@ -8,16 +8,16 @@ export const useAuth = () => {
 
     const login = useCallback((id, token, password, isManager) => {
         localStorage.setItem('userData', JSON.stringify({
-            userId: id,
+            userId: id, 
             token,
             password,
             isManager
         }))
-        setUserId(id)
         setToken(token)
         setPassword(password)
         setIsManager(isManager)
-    }, [setToken, setUserId, setPassword])
+        setUserId(id)
+    }, [setToken, setUserId, setPassword, setIsManager])
 
     const logout = useCallback(() => {
         localStorage.removeItem('userData')

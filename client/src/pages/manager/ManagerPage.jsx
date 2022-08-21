@@ -20,11 +20,14 @@ export const ManagerPage = () => {
             <div className="center-align">
                 <h1>Manager page</h1>
                 {isAuth ? 
-                <Link className="waves-effect blue-grey darken-1 btn" to="user-accounts">User requests</Link> 
+                <Link className="waves-effect blue-grey darken-1 btn" to="user-accounts" style={{margin: "10px"}}>User requests</Link> 
                 : 
-                <Link className="waves-effect blue-grey darken-1 btn" to="register">Create account</Link>
+                <>
+                    <Link className="waves-effect blue-grey darken-1 btn" to="login" style={{margin: "10px"}}>Login</Link>
+                    <Link className="waves-effect blue-grey darken-1 btn" to="register" style={{margin: "10px"}}>Create account</Link>
+                </>
                 }
-            </div>}
+            </div>} 
             <Outlet/>
         </>
     )

@@ -24,12 +24,6 @@ export const UserTransactions = () => {
         })
     }, [getTransactions, setTransactions])
 
-    const formatDate = (date) => {
-        const day = date.getDay()
-        const month = date.getMonth()
-        const year = date.getFullYear()
-        return `${day > 10 ? day : "0" + day}-${month > 10 ? month : "0" + month}-${year}`
-    }
 
     const filterDate = event => {
         const target = event.target
@@ -59,42 +53,47 @@ export const UserTransactions = () => {
                 <div className="filter" onClick={filterDate}>
                 <label>Date filter</label>
                 <p>
-                
-                <label>
-                    <input id="lastDay" className="with-gap" name="group1" type="radio"  />
-                    <span>Last day</span>
-                </label>
+                    <label>
+                        <input id="lastDay" className="with-gap" name="group1" type="radio" />
+                        <span>Last day</span>
+                    </label>
                 </p>
                 <p>
-                <label>
-                    <input id="lastMonth" className="with-gap" name="group1" type="radio"  />
-                    <span>Last month</span>
-                </label>
+                    <label>
+                        <input id="lastMonth" className="with-gap" name="group1" type="radio"  />
+                        <span>Last month</span>
+                    </label>
                 </p>
                 <p>
-                <label>
-                    <input id="lastYear" className="with-gap" name="group1" type="radio"  />
-                    <span>Last year</span>
-                </label>
+                    <label>
+                        <input id="lastYear" className="with-gap" name="group1" type="radio"  />
+                        <span>Last year</span>
+                    </label>
                 </p>
                 </div>
-                <h1 className="center-align" style={{marginRight: "70px"}}>Your transactions</h1>
+                {
+                    transactions.message && transactions.message.length === 0
+                    ? 
+                    <h1 className="center-align" style={{marginRight: "70px"}}>No transactions in this period</h1>
+                    : 
+                    <h1 className="center-align" style={{marginRight: "70px"}}>Your transactions</h1>
+                }
                 {
                     transactions.message && transactions.message.map((transaction, idx) => {
                         return <div className="col s3 m4" key={idx}>
-                                <div className="card blue-grey darken-1 z-depth-4" style={{width: "30rem", height: "27rem"}}>
-                                    <div className="card-content white-text">
-                                        <span style={{marginBottom: "40px"}} className="card-title">{transaction.type}</span>
-                                        {transaction.type === 'LEND' && <h6 style={{marginBottom: "30px"}}><b>Status:&nbsp;{!transaction.closed ? "Opened" : "Closed"}</b></h6>}
-                                        <h6 style={{marginBottom: "30px"}}>From:&nbsp;<strong>{transaction.from}</strong></h6>
-                                        <h6 style={{marginBottom: "30px"}}>To:&nbsp;<strong>{transaction.to}</strong></h6>
-                                        <h6 style={{marginBottom: "30px"}}>Receiver email:&nbsp;<strong>{transaction.email}</strong></h6>
-                                        <h6 style={{marginBottom: "40px"}}>Sum:&nbsp;<b>{transaction.sum}</b></h6>
-                                        <h6>Date:&nbsp;<b>{formatDate(new Date(transaction.date))}</b></h6>
-                                    </div>
+                            <div className="card blue-grey darken-1 z-depth-4" style={{width: "30rem", height: "27rem"}}>
+                                <div className="card-content white-text">
+                                    <span style={{marginBottom: "40px"}} className="card-title">{transaction.type}</span>
+                                    {transaction.type === 'LEND' && <h6 style={{marginBottom: "30px"}}><b>Status:&nbsp;{!transaction.closed ? "Opened" : "Closed"}</b></h6>}
+                                    <h6 style={{marginBottom: "30px"}}>From:&nbsp;<strong>{transaction.from}</strong></h6>
+                                    <h6 style={{marginBottom: "30px"}}>To:&nbsp;<strong>{transaction.to}</strong></h6>
+                                    <h6 style={{marginBottom: "30px"}}>Receiver email:&nbsp;<strong>{transaction.email}</strong></h6>
+                                    <h6 style={{marginBottom: "40px"}}>Sum:&nbsp;<b>{transaction.sum}</b></h6>
+                                    <h6>Date:&nbsp;<b>{transaction.date.substring(0, 10)}</b></h6>
                                 </div>
                             </div>
-                    }) 
+                        </div>
+                    })
                 }
             </div>
         </>

@@ -5,29 +5,21 @@ import { useContext } from "react"
 import { useEffect } from "react"
 import { useState } from "react"
 import { useHttp } from "../../hooks/http.hook"
+import CurrencyInput from 'react-currency-input'
 
 
 export const UserTransfers = () => {
     const { isAuth, userId } = useContext(AuthContext)
-    const { balance, changeBalance, currency, changeCurrency } = useBalance()
+    const { balance, currency, changeCurrency } = useBalance()
     const [form, setForm] = useState({
         email: "",
-        balance: "0,00 " + currency
+        balance: "USD 0.00"
     })
     const { request, setError } = useHttp()
 
-    useEffect(() => {
-        const balanceInput = document.getElementById('balance')
-        balanceInput.value = form.balance
-    }, [form])
-    
     
     const formChange = event => {
         let value = event.target.value
-        if (event.target.id === "balance"){
-            changeBalance(value)
-            value = balance + " " + currency
-        }
         form[event.target.id] = value
         event.target.value = form[event.target.id]
     }
@@ -40,8 +32,7 @@ export const UserTransfers = () => {
         }
         const balanceInput = document.getElementById('balance')
         if (balanceInput.value !== 'USD'){
-            changeBalance(form.balance)
-            form.balance = balance + " " + currency
+            form.balance = currency + " " + balance
         }
         if (event.target.innerText === 'TRANSFER') {
             await request('/api/transactions/transfer', 'POST', {
@@ -76,21 +67,12 @@ export const UserTransfers = () => {
                                 <label htmlFor="email">User email</label>
                             </div>
                             <div className="input-field col s12">
-                                <input id="balance" type="text" className="validate"/>
+                                <CurrencyInput id="balance" value={balance} prefix={currency + " "} thousandSeparator=""/>
                                 <label htmlFor="balance">Sum</label>
                             </div>
-                            <p>
-                                <label>
-                                    <input onClick={changeCurrency} id="USD" className="with-gap" name="group3" type="radio" defaultChecked/>
-                                    <span>USD</span>
-                                </label>
-                            </p>
-                            <p>
-                                <label>
-                                    <input onClick={changeCurrency} id="ILS" className="with-gap" name="group3" type="radio"/>
-                                    <span>ILS</span>
-                                </label>
-                            </p>
+                            <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="USD" style={{margin: '5px'}}>USD</button>
+                            <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="ILS" style={{margin: '5px'}}>ILS</button>
+                            <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="LVC" style={{margin: '5px'}}>LVC</button>
                         </div>
                         <Link to="/user/transactions">Transactions history</Link>
                         <div className="card-action center-align">

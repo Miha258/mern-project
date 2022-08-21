@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useHttp } from "../../hooks/http.hook"
-import { useEffect } from "react"
 import { useBalance } from "../../hooks/balance.hook"
 import { useMail } from "../../hooks/mail.hook"
 import { useContext } from "react"
@@ -20,10 +19,10 @@ export const RegisterUserAccount = () => {
             password: '',
             dateOfBirth: '', 
             addres: '',
-            balance: '0,00 USD'
+            balance: 'USD 0.00'
         }
     )
-    const { balance, changeBalance, currency, changeCurrency } = useBalance()
+    const { balance, currency, changeCurrency } = useBalance()
     const { isAuth, login } = useContext(AuthContext)
     const { needOpenAccount } = useMail()
     
@@ -33,11 +32,6 @@ export const RegisterUserAccount = () => {
         form[event.target.id] = value
         event.target.value = value
     }
-
-    // useEffect(() => {
-    //     const balanceInput = document.getElementById('balance')
-    //     balanceInput.value = form.balance
-    // }, [form])
     
     const registerHandler = async () => {
         try {
@@ -45,8 +39,12 @@ export const RegisterUserAccount = () => {
                 setError("All fields must be filled")
                 return
             }
-            const currency = document.getElementById("USD").checked ? 'USD' : 'ILS'
-            form.balance = balance + ' ' + currency
+            const balanceInput = document.getElementById('balance')
+            
+            if (balanceInput.value !== 'USD'){
+                form.balance = currency + " " + balance
+            }
+
             await request('/api/auth/user-register', 'POST', form)
             let data = await request('/api/auth/user-login', 'POST', {...form})
             const isManager = false
@@ -101,20 +99,11 @@ export const RegisterUserAccount = () => {
                                 <label htmlFor="addres">Addres</label>
                             </div> 
                             <div className="input-field" style={{marginTop: '50px'}}>
-                                <CurrencyInput id="balance" value={form.balance} prefix={currency + " "} thousandSeparator=""/>
+                                <CurrencyInput id="balance" value={balance} prefix={currency + " "} thousandSeparator=""/>
                                 <label htmlFor="balance">Balance</label>
-                                <p>
-                                    <label onClick={changeCurrency}>
-                                        <input id="USD" className="with-gap" name="group3" type="radio" checked/>
-                                        <span>USD</span>
-                                    </label>
-                                </p>
-                                <p>
-                                    <label onClick={changeCurrency}>
-                                        <input id="ILS" className="with-gap" name="group3" type="radio"/>
-                                        <span>ILS</span>
-                                    </label>
-                                </p>
+                                <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="USD" style={{margin: '5px'}}>USD</button>
+                                <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="ILS" style={{margin: '5px'}}>ILS</button>
+                                <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="LVC" style={{margin: '5px'}}>LVC</button>
                             </div>
                         </div>
                         <div className="card-action center-align">

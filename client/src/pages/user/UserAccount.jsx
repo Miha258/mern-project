@@ -6,23 +6,23 @@ import { useHttp } from "../../hooks/http.hook"
 import { Navigate, useNavigate } from "react-router-dom"
 import { useCallback } from "react"
 import { useBalance } from "../../hooks/balance.hook"
+import CurrencyInput from 'react-currency-input'
 
 
 export const UserAccount = () => {
-    const { isAuth, userId, password } = useContext(AuthContext)
-    const [form, setForm] = useState({})
+    const { isAuth, password, userId } = useContext(AuthContext)
+    const [ form, setForm ] = useState({})
     const { request, setError } = useHttp()
-    const { changeCurrency } = useBalance()
-    const [ isOpened, setOpened ] = useState(false)
+    const { changeCurrency, currency, balance, setBalance } = useBalance()
+    const [ isOpened, setOpened ] = useState(true)
     const navigate = useNavigate()
 
-
-    const getAccountData = useCallback(async () => {    
+    const getAccountData = useCallback(async () => { 
         const data = await request(`/api/accounts/user-account/${userId}`, 'GET')
         setForm(data.data)
-        return data
-    }, [userId, request ])
-
+        return data.data
+    }, [userId, request])
+ 
     const padTo2Digits = useCallback(num => num.toString().padStart(2, '0'), [])
     const formatDate = useCallback((date = new Date()) => {
         return [
@@ -31,6 +31,7 @@ export const UserAccount = () => {
             padTo2Digits(date.getDate()),
         ].join('-')
     }, [padTo2Digits])
+    
     const formChange = event => {
         const button = document.getElementById('changebtn')
         if (event.target.value !== form[event.target.id]){
@@ -39,11 +40,13 @@ export const UserAccount = () => {
             button.classList.add('disabled')
         }
     }
+
     const changePassword = (newPassword) => {
         const data = JSON.parse(localStorage.getItem('userData'))
         data.password = newPassword
         localStorage.setItem('userData', JSON.stringify(data))
     }
+
     const changeAccountData = async event => {
         event.preventDefault()
         form.surname = document.getElementById('surname').value
@@ -65,23 +68,28 @@ export const UserAccount = () => {
         changePassword(document.getElementById('password').value)
         navigate("/user/account", { replace: true })
     }
+    
     useEffect(() => {
         getAccountData().then(data => {
-            setOpened(data.message.opened)
-            Object.keys(data.message).forEach(value => {
-            const input = document.getElementById(value)
-                if (input){
-                    if (value === "password"){
-                        input.value = password
-                    } else if (value === "dateOfBirth") {
-                        input.value = formatDate(new Date(data.message[value]))
-                    } else {
-                        input.value = data.message[value]
+            if (data){
+                setOpened(data.opened)
+                Object.keys(data).forEach(value => {
+                const input = document.getElementById(value)
+                    if (input){
+                        if (value === "password"){
+                            input.value = password
+                        } else if (value === "dateOfBirth") {
+                            input.value = formatDate(new Date(data[value]))
+                        } else if (value === "balance") {
+                            setBalance(data[value])
+                        } else {
+                            input.value = data[value]
+                        }
                     }
-                }
-            })
+                })
+            }
         })
-    }, [getAccountData, password, formatDate, setOpened])
+    }, [])
 
     if (!isAuth){
         <Navigate to="/user/login"/>
@@ -125,21 +133,12 @@ export const UserAccount = () => {
                             <label htmlFor="dateOfBirth">Date of birth</label>
                         </div>
                     </div>
-                    <div className="input-field" style={{marginTop: '50px'}} onClick={changeCurrency}>
-                        <input disabled id="balance" type="text" className="validate"/>
+                    <div className="input-field" style={{marginTop: '50px'}}>
+                        <CurrencyInput disabled value={balance} id="balance" prefix={currency + " "} thousandSeparator=""/>
                         <label htmlFor="disabled"></label>
-                        <p>
-                            <label>
-                                <input id="USD" className="with-gap" name="group3" type="radio" defaultChecked/>
-                                <span>USD</span>
-                            </label>
-                        </p>
-                        <p>
-                            <label>
-                                <input id="ILS" className="with-gap" name="group3" type="radio"/>
-                                <span>ILS</span>
-                            </label>
-                        </p>
+                        <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="USD" style={{margin: '5px'}}>USD</button>
+                        <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="ILS" style={{margin: '5px'}}>ILS</button>
+                        <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="LVC" style={{margin: '5px'}}>LVC</button>
                     </div>
                     <div className="card-action center-align">
                         <button id="changebtn" className="waves-effect waves-light btn disabled" onClick={changeAccountData}>Change</button>

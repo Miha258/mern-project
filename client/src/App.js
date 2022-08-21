@@ -8,9 +8,10 @@ function App() {
   const routes = useRoutes()
   const { token, userId, login, logout, password, isManager} = useAuth()
   const isAuth = !!token
+  const storageData = JSON.parse(localStorage.getItem('userData'))
   return (
       <AuthContext.Provider value={{
-        token, userId, login, logout, isAuth, password, isManager
+        token: token ? token : storageData.token, userId:  userId ? userId : storageData.userId, login, logout, isAuth, password: password ? password : storageData.password, isManager
       }}>
         <div>
           {routes}
