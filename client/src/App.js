@@ -11,7 +11,7 @@ function App() {
   const storageData = JSON.parse(localStorage.getItem('userData'))
   return (
       <AuthContext.Provider value={{
-        token: token ? token : storageData.token, userId:  userId ? userId : storageData.userId, login, logout, isAuth, password: password ? password : storageData.password, isManager
+        token: token ? token : storageData ? storageData.token : null, userId:  userId ? userId : storageData ? storageData.userId : null, login, logout, isAuth, password: password ? password : storageData ? storageData.password: null, isManager
       }}>
         <div>
           {routes}
