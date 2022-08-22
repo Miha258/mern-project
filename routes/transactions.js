@@ -28,9 +28,9 @@ router.post('/transfer',
             return res.status(404).json({ message: 'User doesn`t exists' })
         }
 
-        const transferSum = parseFloat(sum.replace(',','.'))
-        const candidateBalance = parseFloat(candidate.balance.replace(',','.'))
-        const userBalance = parseFloat(user.balance.replace(',','.'))
+        const transferSum = parseFloat(sum.substring(4))
+        const candidateBalance = parseFloat(candidate.balance.substring(4))
+        const userBalance = parseFloat(user.balance.substring(4))
         
         if (email === candidate.email) {
             return res.status(400).json({ message: 'You can`t transfer money yourself' })
@@ -47,8 +47,8 @@ router.post('/transfer',
         const transaction = new Transaction({ userId, type, email: user.email, date: new Date(), sum, from: candidate.surname + " " + candidate.name, to: user.surname + " " + user.name})
         await transaction.save()
         
-        await candidate.updateOne({ "$set": { balance: (candidateBalance - transferSum).toString().replace('.',',') + " USD" }})
-        await user.updateOne({ "$set": { balance: (userBalance + transferSum).toString().replace('.',',') + " USD" }})
+        await candidate.updateOne({ "$set": { balance:  "USD " + (candidateBalance - transferSum).toString()}})
+        await user.updateOne({ "$set": { balance: "USD " + (userBalance + transferSum).toString()}})
 
         return res.status(200).json({ message: 'Transaction complite' }) 
     } catch (err) {
@@ -77,9 +77,9 @@ router.post('/lend',
             return res.status(404).json({message: 'User doesn`t exists'})
         }
 
-        const lendSum = parseFloat(sum.replace(',','.'))
-        const candidateBalance = parseFloat(candidate.balance.replace(',','.'))
-        const userBalance = parseFloat(user.balance.replace(',','.'))
+        const lendSum = parseFloat(sum.substring(4))
+        const candidateBalance = parseFloat(candidate.balance.substring(4))
+        const userBalance = parseFloat(user.balance.substring(4))
         
         if (email === candidate.email) {
             return res.status(400).json({message: 'You can`t lend money yourself'})
@@ -102,8 +102,8 @@ router.post('/lend',
         transaction = new Transaction({userId, type, email: user.email, date: new Date(), sum, closed: false, from: candidate.surname + " " + candidate.name, to: user.surname + " " + user.name })
         await transaction.save()
         
-        await candidate.updateOne({ "$set": { balance: (candidateBalance - lendSum).toString().replace('.',',') + " USD" }})
-        await user.updateOne({ "$set": { balance: (userBalance + lendSum).toString().replace('.',',') + " USD" }})
+        await candidate.updateOne({ "$set": { balance: "USD " + (candidateBalance - lendSum).toString()}})
+        await user.updateOne({ "$set": { balance: "USD " + (userBalance + lendSum).toString()}})
 
         let checkLendStatus = setInterval(async () => { 
             if (userBalance * 0.6 < lendSum) {
@@ -144,8 +144,8 @@ router.post('/lend',
                     }
                 }, 5000)
             } else if (transaction.date === transaction.date.setDate(transaction.date.getDate + 7)){
-                await candidate.updateOne({ "$set": { balance: (candidateBalance - lendSum).toString().replace('.',',') + " USD" }})
-                await user.update({ "$set": { balance: (userBalance + lendSum).toString().replace('.',',') + " USD" }})
+                await candidate.updateOne({ "$set": { balance: "USD " + (candidateBalance - lendSum).toString() }})
+                await user.update({ "$set": { balance: "USD " + (userBalance + lendSum).toString() }})
                 await Transaction.findByIdAndUpdate(user.id, { "$set": { closed: true }})
                 await Transaction.findByIdAndUpdate(userId, { "$set": { closed: true }})
             }
