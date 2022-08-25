@@ -89,7 +89,7 @@ router.put('/change-user-account',
             return res.status(409).json({ message: 'This email already used' })
         }
         const passwordHash = await bcrypt.hash(password, 12)
-        await User.findByIdAndUpdate(userId, {"$set": { surname, name, email, password: passwordHash, dateOfBirth, addres }})
+        await User.findByIdAndUpdate(userId, { "$set": { surname, name, email, password: passwordHash, dateOfBirth, addres }})
         return res.status(200).json({ message: 'User successfully updated', data: { surname, name, email, password: passwordHash, dateOfBirth, addres } })
     } catch (err) {
         console.log(err)
