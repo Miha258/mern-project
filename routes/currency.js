@@ -16,7 +16,6 @@ async function convertLVC(to, from, amount) {
         const result = parseFloat(((usersCount * 0.01) * usdAmount).toFixed(2))
         return result
     } else if (from === 'LVC') {
-        console.log(amount)
         const currencyConverter = new CC({from: "USD", to, amount: parseFloat(amount)})
         const usdAmount = await currencyConverter.convert()
 
@@ -29,15 +28,14 @@ async function convertLVC(to, from, amount) {
 
 router.get('/convert', async (req, res) => {
     try {
-        const { from, to, amount  } = req.query
+        const { to, from, amount  } = req.query
         let convertedCur
-
         if (from === "LVC" || to === "LVC"){
             convertedCur = await convertLVC(from, to, amount)
             return res.status(200).json({ result: convertedCur })
         }
 
-        const currencyConverter = new CC({from, to, amount: parseFloat(amount)})
+        const currencyConverter = new CC({from: to, to: from, amount: parseFloat(amount)})
         convertedCur = await currencyConverter.convert()
         return res.status(200).json({ result: convertedCur })
     } catch (err) {

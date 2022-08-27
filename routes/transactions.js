@@ -29,9 +29,9 @@ router.post('/transfer',
             return res.status(404).json({ message: 'User doesn`t exists' })
         }
 
-        const transferSum = await convertLVC("USD", "LVC", sum.substring(4))
-        const candidateBalance = await convertLVC("USD", "LVC", candidate.balance.substring(4))
-        const userBalance = await convertLVC("USD", "LVC", user.balance.substring(4))
+        const transferSum = await convertLVC("LVC", "USD", sum.substring(4))
+        const candidateBalance = await convertLVC("LVC", "USD", candidate.balance.substring(4))
+        const userBalance = await convertLVC("LVC", "USD", user.balance.substring(4))
         
         if (email === candidate.email) {
             return res.status(400).json({ message: 'You can`t transfer money yourself' })
@@ -48,8 +48,12 @@ router.post('/transfer',
         const transaction = new Transaction({ userId, type, email: user.email, date: new Date(), sum, from: candidate.surname + " " + candidate.name, to: user.surname + " " + user.name})
         await transaction.save()
         
-        await candidate.updateOne({ "$set": { balance:  "USD " + (candidateBalance - transferSum).toString()}})
-        await user.updateOne({ "$set": { balance: "USD " + (userBalance + transferSum).toString()}})
+
+        const newCandidateBalance = "USD " + (candidateBalance - transferSum)
+        const newUserBalance = "USD " + (userBalance + transferSum)
+
+        await candidate.updateOne({ "$set": { balance:  newCandidateBalance }})
+        await user.updateOne({ "$set": { balance:  newUserBalance }})
 
         return res.status(200).json({ message: 'Transaction complite' }) 
     } catch (err) {
@@ -78,9 +82,9 @@ router.post('/lend',
             return res.status(404).json({message: 'User doesn`t exists'})
         }
 
-        const lendSum = await convertLVC("USD", "LVC", sum.substring(4))
-        const candidateBalance = await convertLVC("USD", "LVC", candidate.balance.substring(4))
-        const userBalance = await convertLVC("USD", "LVC", user.balance.substring(4))
+        const lendSum = await convertLVC("LVC", "USD", sum.substring(4))
+        const candidateBalance = await convertLVC("LVC", "USD", candidate.balance.substring(4))
+        const userBalance = await convertLVC("LVC", "USD", user.balance.substring(4))
         
         if (email === candidate.email) {
             return res.status(400).json({message: 'You can`t lend money yourself'})
@@ -102,9 +106,12 @@ router.post('/lend',
         await transaction.save()
         transaction = new Transaction({userId, type, email: user.email, date: new Date(), sum, closed: false, from: candidate.surname + " " + candidate.name, to: user.surname + " " + user.name })
         await transaction.save()
+
+        const newCandidateBalance = "USD " + (candidateBalance - lendSum)
+        const newUserBalance = "USD " + (userBalance + lendSum)
         
-        await candidate.updateOne({ "$set": { balance: "USD " + (candidateBalance - lendSum).toString()}})
-        await user.updateOne({ "$set": { balance: "USD " + (userBalance + lendSum).toString()}})
+        await candidate.updateOne({ "$set": { balance: newCandidateBalance}})
+        await user.updateOne({ "$set": { balance: newUserBalance}})
 
         let checkLendStatus = setInterval(async () => { 
             if (userBalance * 0.6 < lendSum) {
