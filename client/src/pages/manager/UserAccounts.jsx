@@ -23,14 +23,6 @@ export const UserAccounts = () => {
         getUserAccounts()
     }, [getUserAccounts])
 
-
-    const formatDate = (date) => {
-        const day = date.getDay()
-        const month = date.getMonth()
-        const year = date.getFullYear()
-        return `${day > 10 ? day : "0" + day}-${month > 10 ? month : "0" + month}-${year}`
-    }
-
     const openAccount = async (id, email, name, surname) => {
         await request(`/api/accounts/open-account/${id}`, 'GET')
         await getUserAccounts()
@@ -65,7 +57,7 @@ export const UserAccounts = () => {
                                     <div className="card-content white-text">
                                         <span style={{marginBottom: "40px"}} className="card-title">{account.surname + " " + account.name}</span>
                                         <h6 style={{marginBottom: "30px"}}>Email:&nbsp;<strong>{account.email}</strong></h6>
-                                        <h6 style={{marginBottom: "30px"}}>Date of birth:&nbsp;<strong>{formatDate(new Date(account.dateOfBirth))}</strong></h6>
+                                        <h6 style={{marginBottom: "30px"}}>Date of birth:&nbsp;<strong>{account.dateOfBirth.substring(0, 10)}</strong></h6>
                                         <h6 style={{marginBottom: "30px"}}>Addres:&nbsp;<strong>{account.addres}</strong></h6>
                                         <h6 style={{marginBottom: "40px"}}>Balance:&nbsp;<b>{account.balance}</b></h6>
                                     </div>

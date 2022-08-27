@@ -144,7 +144,7 @@ export const UserAccount = () => {
                         <button id="changebtn" className="waves-effect waves-light btn disabled" onClick={changeAccountData}>Change</button>
                     </div>
                     </form>
-                : <h2>Wait until manager accept you request</h2>}
+                : <h2>Wait until manager accept your request</h2>}
             </div>
         </>
     );

@@ -17,9 +17,9 @@ export const UserPage = () => {
     const getAccountBalance = useCallback(async () => {   
         const data = await request(`/api/accounts/user-account/${userId}`, 'GET')
         setCurrensies({
-            usd: "USD: " + data.data.balance.substring(4),
-            ils: "ILS: " + await convertCurrency('ILS', 'USD', data.data.balance),
-            lvc: "LVC: " + await convertCurrency('LVC', 'USD', data.data.balance)
+            usd: "USD: " + parseFloat(data.data.balance.substring(4)).toFixed(2),
+            ils: "ILS: " + parseFloat(await convertCurrency('USD', 'ILS', data.data.balance)).toFixed(2),
+            lvc: "LVC: " + parseFloat(await convertCurrency('USD', 'LVC', data.data.balance)).toFixed(2)
         })
     }, [userId, request])
 

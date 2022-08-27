@@ -1,52 +1,59 @@
 import { Link, Navigate } from "react-router-dom"
-import { useBalance } from "../../hooks/balance.hook"
 import { AuthContext } from "../../context"
 import { useContext } from "react"
 import { useEffect } from "react"
 import { useState } from "react"
+import { useCallback } from "react"
 import { useHttp } from "../../hooks/http.hook"
 import CurrencyInput from 'react-currency-input'
+import { useRef } from "react"
 
 
 export const UserTransfers = () => {
     const { isAuth, userId } = useContext(AuthContext)
-    const { balance, currency, changeCurrency } = useBalance()
-    const [form, setForm] = useState({
-        email: "",
-        balance: "USD 0.00"
-    })
+    
+    const email = useRef(null)
+    const balance = useRef(null)
+   
+    const [ isOpened, setOpened ] = useState(true)
     const { request, setError } = useHttp()
 
     
-    const formChange = event => {
-        let value = event.target.value
-        form[event.target.id] = value
-        event.target.value = form[event.target.id]
-    }
+    const isAccountOpened = useCallback(async () => { 
+        const data = await request(`/api/accounts/user-account/${userId}`, 'GET')
+        return data.data.opened
+    }, [userId, request])
+    
+
+    useEffect(() => {
+        isAccountOpened().then(isOpened => setOpened(isOpened))
+    }, [isAccountOpened])
+
+    
 
     const transferHandler = async event => {
         event.preventDefault()
-        if (Object.values(form).includes("")){
+        const currentSum = balance.current.state.maskedValue
+        const currentEmail = email.current.value
+        
+        if (currentSum === "" || currentEmail === ""){
             setError("All fields must be filled")
             return
         }
-        const balanceInput = document.getElementById('balance')
-        if (balanceInput.value !== 'USD'){
-            form.balance = currency + " " + balance
-        }
+
         if (event.target.innerText === 'TRANSFER') {
             await request('/api/transactions/transfer', 'POST', {
                 userId,
                 type: 'TRANSFER',
-                email: form.email,
-                sum: form.balance,
+                email: currentEmail,
+                sum: currentSum
             })
         } else if (event.target.innerText === 'LEND'){
             await request('/api/transactions/lend', 'POST', {
                 userId,
                 type: 'LEND',
-                email: form.email,
-                sum: form.balance
+                email: currentEmail,
+                sum: currentSum
             })
         }
     }
@@ -59,20 +66,17 @@ export const UserTransfers = () => {
         <>
             <div className="row" style={{paddingLeft: "10rem", paddingRight: "10rem"}}>
                 <h1>Transfer money</h1>
-                <form className="col s12">
-                    <div className="row" onChange={formChange}>
+                {isOpened ? <form className="col s12">
+                    <div className="row">
                         <div className="input-field" style={{marginTop: '50px'}}>
                             <div className="input-field col s12">
-                                <input id="email" type="text" className="validate"/>
+                                <input ref={email} id="email" type="text" className="validate"/>
                                 <label htmlFor="email">User email</label>
                             </div>
                             <div className="input-field col s12">
-                                <CurrencyInput id="balance" value={balance} prefix={currency + " "} thousandSeparator=""/>
+                                <CurrencyInput ref={balance} id="balance" value={balance.current ? balance.current.state.value : 0} prefix={"LVC "} thousandSeparator=""/>
                                 <label htmlFor="balance">Sum</label>
                             </div>
-                            <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="USD" style={{margin: '5px'}}>USD</button>
-                            <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="ILS" style={{margin: '5px'}}>ILS</button>
-                            <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="LVC" style={{margin: '5px'}}>LVC</button>
                         </div>
                         <Link to="/user/transactions">Transactions history</Link>
                         <div className="card-action center-align">
@@ -80,7 +84,7 @@ export const UserTransfers = () => {
                             <button onClick={transferHandler} id="changebtn" style={{margin: "20px"}} className="waves-effect waves-light btn">LEND</button>
                         </div>
                     </div>
-                </form>
+                </form> : <h2>Wait until manager accept your request</h2>}
             </div>
         </>
     );

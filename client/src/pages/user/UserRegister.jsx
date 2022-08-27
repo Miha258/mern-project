@@ -22,7 +22,7 @@ export const RegisterUserAccount = () => {
             balance: 'USD 0.00'
         }
     )
-    const { balance, currency, changeCurrency } = useBalance()
+    const { balance, currency, changeCurrency, convertCurrency} = useBalance()
     const { isAuth, login } = useContext(AuthContext)
     const { needOpenAccount } = useMail()
     
@@ -39,10 +39,10 @@ export const RegisterUserAccount = () => {
                 setError("All fields must be filled")
                 return
             }
-            const balanceInput = document.getElementById('balance')
-            
-            if (balanceInput.value !== 'USD'){
-                form.balance = currency + " " + balance
+
+            if (currency !== 'USD'){
+                const data = await convertCurrency('USD', 'ILS', form.balance)
+                form.balance = currency + " " + data.result
             }
 
             await request('/api/auth/user-register', 'POST', form)
@@ -51,7 +51,7 @@ export const RegisterUserAccount = () => {
             login(data.userId, data.token, form.password, isManager)
             
             const userId = data.userId
-            data = await request('/api/account/all-managers')
+            data = await request('/api/accounts/all-managers')
             const managersEmails = data.data.filter(manager => manager.email)
 
             for (let email of managersEmails){
@@ -103,7 +103,6 @@ export const RegisterUserAccount = () => {
                                 <label htmlFor="balance">Balance</label>
                                 <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="USD" style={{margin: '5px'}}>USD</button>
                                 <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="ILS" style={{margin: '5px'}}>ILS</button>
-                                <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="LVC" style={{margin: '5px'}}>LVC</button>
                             </div>
                         </div>
                         <div className="card-action center-align">
