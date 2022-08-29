@@ -29,9 +29,9 @@ router.post('/transfer',
             return res.status(404).json({ message: 'User doesn`t exists' })
         }
 
-        const transferSum = await convertLVC("LVC", "USD", sum.substring(4))
-        const candidateBalance = await convertLVC("LVC", "USD", candidate.balance.substring(4))
-        const userBalance = await convertLVC("LVC", "USD", user.balance.substring(4))
+        const transferSum = await convertLVC("USD", "LVC", sum.substring(4))
+        const candidateBalance = parseFloat(candidate.balance.substring(4))
+        const userBalance = parseFloat(user.balance.substring(4))
         
         if (email === candidate.email) {
             return res.status(400).json({ message: 'You can`t transfer money yourself' })
@@ -45,9 +45,10 @@ router.post('/transfer',
             return res.status(400).json({ message: 'Your balance too small to transfer this sum' })
         }
         
-        const transaction = new Transaction({ userId, type, email: user.email, date: new Date(), sum, from: candidate.surname + " " + candidate.name, to: user.surname + " " + user.name})
+        let transaction = new Transaction({ userId, type, email: user.email, date: new Date(), sum, from: candidate.surname + " " + candidate.name, to: user.surname + " " + user.name})
         await transaction.save()
-        
+        transaction = new Transaction({ userId: user.id, type, email: user.email, date: new Date(), sum, from: candidate.surname + " " + candidate.name, to: user.surname + " " + user.name})
+        await transaction.save()
 
         const newCandidateBalance = "USD " + (candidateBalance - transferSum)
         const newUserBalance = "USD " + (userBalance + transferSum)
@@ -82,9 +83,9 @@ router.post('/lend',
             return res.status(404).json({message: 'User doesn`t exists'})
         }
 
-        const lendSum = await convertLVC("LVC", "USD", sum.substring(4))
-        const candidateBalance = await convertLVC("LVC", "USD", candidate.balance.substring(4))
-        const userBalance = await convertLVC("LVC", "USD", user.balance.substring(4))
+        const lendSum = await convertLVC("USD", "LVC", sum.substring(4))
+        const candidateBalance = parseFloat(candidate.balance.substring(4))
+        const userBalance = parseFloat(user.balance.substring(4))
         
         if (email === candidate.email) {
             return res.status(400).json({message: 'You can`t lend money yourself'})
