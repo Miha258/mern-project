@@ -19,7 +19,7 @@ export const RegisterUserAccount = () => {
             password: '',
             dateOfBirth: '', 
             addres: '',
-            balance: 'USD 0.00'
+            balance: '' 
         }
     )
     const { balance, currency, changeCurrency, convertCurrency} = useBalance()
@@ -99,7 +99,7 @@ export const RegisterUserAccount = () => {
                                 <label htmlFor="addres">Addres</label>
                             </div> 
                             <div className="input-field" style={{marginTop: '50px'}}>
-                                <CurrencyInput id="balance" value={balance} prefix={currency + " "} thousandSeparator=""/>
+                                <CurrencyInput id="balance" value={balance} prefix={currency + " "} thousandSeparator="" onChange={value => form.balance = value}/>
                                 <label htmlFor="balance">Balance</label>
                                 <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="USD" style={{margin: '5px'}}>USD</button>
                                 <button onClick={changeCurrency} className="waves-effect waves-light btn-small" id="ILS" style={{margin: '5px'}}>ILS</button>
